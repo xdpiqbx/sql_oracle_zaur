@@ -1,0 +1,4 @@
+--SELECT * from hr.regions;
+--SELECT * from hr.COUNTRIES;
+--SELECT * from hr.jobs;
+--SELECT * from hr.locations;

@@ -1,0 +1,28 @@
+container-registry.oracle.com
+https://container-registry.oracle.com/ords/ocr/ba/database/free
+
+
+> docker login container-registry.oracle.com
+artem.usenko@gmail.com
+TnxS7FXRs512wd=kXDJHc
+
+---start docker desktop
+> docker pull container-registry.oracle.com/database/free:latest
+
+> docker run -d --name xdpiqbx_oracle_container container-registry.oracle.com/database/free:latest
+
+---View a summary of image vulnerabilities and recommendations
+docker scout quickview container-registry.oracle.com/database/free:latest
+
+---Create container
+Learning_oracle
+port:1521
+D:\Docker_images\Learning_Oracle\zaur_tregulov_udemy_opt:/opt/oracle
+ORACLE_PWD=qwerty
+
+username:SYSTEM
+FREEPDB1
+
+sqlplus system/qwerty@localhost:1521/FREEPDB1 @customer_orders/co_install.sql
+sqlplus system/qwerty@localhost:1521/FREEPDB1 @human_resources/hr_install.sql
+sqlplus system/qwerty@localhost:1521/FREEPDB1 @sales_history/sh_install.sql
