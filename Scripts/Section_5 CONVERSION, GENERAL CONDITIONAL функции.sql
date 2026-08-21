@@ -209,13 +209,35 @@
 --https://www.udemy.com/course/sql-oracle-certification/learn/lecture/16661506#overview
 
 --1. Используя функции, получите список всех сотрудников у которых в имени есть буква 'b' (без учета регистра).
+--SELECT * FROM hr.employees WHERE LOWER(first_name) LIKE('%b%');
+
 --2. Используя функции, получите список всех сотрудников у которых в имени содержатся минимум 2 буквы 'a'.
+--SELECT * FROM hr.employees WHERE LOWER(first_name) LIKE('%a%a%');
+
 --3. Получите первое слово из имени департамента, для тех департаментов, у которых название состоит больше, чем из одного слова.
+--SELECT department_name, SUBSTR(department_name, 1, INSTR(department_name, ' ')-1)
+--	FROM hr.departments WHERE INSTR(department_name, ' ') > 0;
+
 --4. Получите имена сотрудников без первой и последней буквы в имени.
+--SELECT first_name, SUBSTR(first_name, 2, LENGTH(first_name)-2)  FROM hr.employees;
+
 --5. Получите список всех сотрудников, у которых в значении job_id после знака '_' как минимум 3 символа, но при этом это значение после '_' не равно 'CLERK'.
+--SELECT first_name, job_id, SUBSTR(job_id, INSTR(job_id, '_')+1) FROM hr.employees
+--	WHERE job_id NOT LIKE '%CLERK' AND LENGTH(SUBSTR(job_id, INSTR(job_id, '_')+1)) > 2;
+
 --6. Получите список всех сотрудников, которые пришли на работу в первый день любого месяца.
---7. Получите список всех сотрудников, которые пришли на работу в 2008ом году.
+--SELECT first_name, hire_date, LAST_DAY(ADD_MONTHS(hire_date, -1))+1 AS frist_day FROM hr.employees
+--	WHERE hire_date = LAST_DAY(ADD_MONTHS(hire_date, -1))+1;
+
+--7. Получите список всех сотрудников, которые пришли на работу в 2012ом году.
+--SELECT first_name, hire_date, TO_CHAR(hire_date, 'YYYY') FROM hr.employees
+--	WHERE TO_NUMBER(TO_CHAR(hire_date, 'YYYY')) = 2012;
+
 --8. Покажите завтрашнюю дату в формате: Tomorrow is Second day of January
+SELECT SYSDATE,
+	'Tomororw is ' || INITCAP(TO_CHAR(SYSDATE+1, 'DDspth')) || ' day of ' || INITCAP(TO_CHAR(SYSDATE+1, 'MONTH'))
+	FROM dual;
+
 --9. Выведите имя сотрудника и дату его прихода на работу в формате: 21st of June, 2007
 --10.Получите список работников с увеличенными зарплатами на 20%. Зарплату показать в формате: $28,800.00
 --11.Выведите актуальную дату (нынешнюю), + секунда, + минута, + час, + день, + месяц, + год. (Всё это по отдельности прибавляется к актуальной дате).
