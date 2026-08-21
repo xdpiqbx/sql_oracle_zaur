@@ -234,8 +234,8 @@
 --	WHERE TO_NUMBER(TO_CHAR(hire_date, 'YYYY')) = 2012;
 
 --8. Покажите завтрашнюю дату в формате: Tomorrow is Second day of January
-SELECT SYSDATE, TO_CHAR(SYSDATE, '"Tomororw is "Ddspth" day of "Month')
-	FROM dual;
+--SELECT SYSDATE, TO_CHAR(SYSDATE, '"Tomororw is "Ddspth" day of "Month')
+--	FROM dual;
 -- Here is 'Ddspth' stands for - 'Dd' as Day 'sp' - written by words and with 'th'
 
 --SELECT SYSDATE,
@@ -243,13 +243,69 @@ SELECT SYSDATE, TO_CHAR(SYSDATE, '"Tomororw is "Ddspth" day of "Month')
 --	FROM dual;
 
 --9. Выведите имя сотрудника и дату его прихода на работу в формате: 21st of June, 2007
+--SELECT  first_name, hire_date, TO_CHAR(hire_date, 'ddth" of "fmMonth", "YYYY')
+--	FROM hr.employees;
+
 --10.Получите список работников с увеличенными зарплатами на 20%. Зарплату показать в формате: $28,800.00
---11.Выведите актуальную дату (нынешнюю), + секунда, + минута, + час, + день, + месяц, + год. (Всё это по отдельности прибавляется к актуальной дате).
+--SELECT  first_name, salary, TO_CHAR(salary*1.2, '$999,999.99')
+--	FROM hr.employees;
+
+--11.Выведите актуальную дату (нынешнюю), + секунда, + минута, + час, + день, + месяц, + год.
+--(Всё это по отдельности прибавляется к актуальной дате).
+--SELECT SYSDATE, SYSDATE+1/(24*60*60) FROM dual; -- + 1 sec
+--SELECT SYSDATE, SYSDATE+1/(24*60) FROM dual; -- + 1 min
+--SELECT SYSDATE, SYSDATE+1/24 FROM dual; -- + 1 hour
+--SELECT SYSDATE, SYSDATE+1 FROM dual; -- + 1 day
+--SELECT SYSDATE, ADD_MONTHS(SYSDATE, 1)FROM dual; -- + 1 mon
+--SELECT SYSDATE, ADD_MONTHS(SYSDATE, 12)FROM dual; -- + 1 year
+
+--SELECT SYSDATE, ADD_MONTHS(SYSDATE+1/(24*60*60)+1/(24*60)+1/24+1, 13) AS added_one FROM dual;
+--SELECT SYSDATE, ADD_MONTHS(SYSDATE+1+1/24+1/(24*60)+1/(24*60*60), 13) AS added_one FROM dual;
+
+--SELECT
+--	SYSDATE,
+--	SYSDATE + INTERVAL '1' YEAR
+--		+ INTERVAL '1' MONTH
+--		+ INTERVAL '1' DAY
+--		+ INTERVAL '1' HOUR
+--		+ INTERVAL '1' MINUTE
+--		+ INTERVAL '1' SECOND
+--			AS added_one
+--FROM dual;
+
 --12.Выведите имя сотрудника, его з/п и новую з/п, которая равна старой плюс это значение текста «$12,345.55».
---13.Выведите имя сотрудника, день его трудоустройства, а также количество месяцев между днём его трудоустройства и датой, которую необходимо получить из текста «SEP, 18:45:00 18 2009».
+--SELECT  first_name, salary, salary + TO_NUMBER('$12,345.55', '$999,999.99') AS increased
+--	FROM hr.employees;
+
+--13.Выведите имя сотрудника, день его трудоустройства, а также количество месяцев между днём его трудоустройства и датой,
+-- которую необходимо получить из текста «SEP, 18:45:00 18 2009».
+--SELECT first_name, hire_date,
+--	ROUND(MONTHS_BETWEEN(hire_date, TO_DATE('SEP, 18:45:00 18 2009', 'MON", "hh24:mi:ss DD YYYY')), 3) AS month_between
+--FROM hr.employees;
+
 --14.Выведите имя сотрудника, его з/п, а также полную з/п (salary + commission_pct(%)) в формате: $24,000.00 .
---15.Выведите имя сотрудника, его фамилию, а также выражение «different length», если длина имени не равна длине фамилии или выражение «same length», если длина имени равна длине фамилии. Не используйте conditional functions.
+--SELECT first_name, salary,
+--	TO_CHAR(salary+salary*NVL(commission_pct, 0), '$999,999.99')
+--FROM hr.employees;
+
+--15.Выведите имя сотрудника, его фамилию, а также выражение «different length», если длина имени не равна длине фамилии
+--или выражение «same length», если длина имени равна длине фамилии. Не используйте conditional functions.
+--SELECT first_name, last_name,
+--	CASE
+--		WHEN LENGTH(first_name) = LENGTH(last_name) THEN 'same length'
+--		ELSE 'different length'
+--	END
+--FROM hr.employees;
+
+--SELECT first_name, last_name,
+--	REPLACE(
+--		REPLACE(TO_CHAR(LENGTH(first_name) = LENGTH(last_name)), 'TRUE', 'same length'),
+--			'FALSE', 'different length')
+--FROM hr.employees;
+
 --16.Выведите имя сотрудника, его комиссионные, а также информацию о наличии бонусов к зарплате – есть ли у него комиссионные (Yes/No).
+--SELECT first_name, commission_pct, NVL2(commission_pct, 'Yes', 'No') FROM hr.employees;
+
 --17.Выведите имя сотрудника и значение которое его будет характеризовать: значение комиссионных, если присутствует, если нет, то id его менеджера, если и оно отсутствует, то его з/п.
 --18.Выведите имя сотрудника, его з/п, а также уровень зарплаты каждого сотрудника: Меньше 5000 считается Low level, Больше или равно 5000 и меньше 10000 считается Normal level, Больше или равно 10000 считается High level.
 --19.Для каждой страны показать регион, в котором она находится: 1-Europe, 2-America, 3-Asia, 4-Africa . Выполнить данное задание, не используя функционал JOIN. Используйте DECODE.
