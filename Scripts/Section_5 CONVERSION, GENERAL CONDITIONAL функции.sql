@@ -234,9 +234,13 @@
 --	WHERE TO_NUMBER(TO_CHAR(hire_date, 'YYYY')) = 2012;
 
 --8. Покажите завтрашнюю дату в формате: Tomorrow is Second day of January
-SELECT SYSDATE,
-	'Tomororw is ' || INITCAP(TO_CHAR(SYSDATE+1, 'DDspth')) || ' day of ' || INITCAP(TO_CHAR(SYSDATE+1, 'MONTH'))
+SELECT SYSDATE, TO_CHAR(SYSDATE, '"Tomororw is "Ddspth" day of "Month')
 	FROM dual;
+-- Here is 'Ddspth' stands for - 'Dd' as Day 'sp' - written by words and with 'th'
+
+--SELECT SYSDATE,
+--	'Tomororw is ' || INITCAP(TO_CHAR(SYSDATE+1, 'DDspth')) || ' day of ' || INITCAP(TO_CHAR(SYSDATE+1, 'MONTH'))
+--	FROM dual;
 
 --9. Выведите имя сотрудника и дату его прихода на работу в формате: 21st of June, 2007
 --10.Получите список работников с увеличенными зарплатами на 20%. Зарплату показать в формате: $28,800.00
