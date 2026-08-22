@@ -226,18 +226,19 @@
 --SELECT first_name, job_id, SUBSTR(job_id, INSTR(job_id, '_')+1) FROM hr.employees
 --	WHERE job_id NOT LIKE '%CLERK' AND LENGTH(SUBSTR(job_id, INSTR(job_id, '_')+1)) > 2;
 
---https://www.udemy.com/course/sql-oracle-certification/learn/lecture/16661506#overview -------------------------------------
-
 --6. Получите список всех сотрудников, которые пришли на работу в первый день любого месяца.
 --SELECT first_name, hire_date, LAST_DAY(ADD_MONTHS(hire_date, -1))+1 AS frist_day FROM hr.employees
 --	WHERE hire_date = LAST_DAY(ADD_MONTHS(hire_date, -1))+1;
+
+--SELECT first_name, hire_date FROM hr.employees
+--	WHERE TO_CHAR(hire_date, 'DD') = '01';
 
 --7. Получите список всех сотрудников, которые пришли на работу в 2012ом году.
 --SELECT first_name, hire_date, TO_CHAR(hire_date, 'YYYY') FROM hr.employees
 --	WHERE TO_NUMBER(TO_CHAR(hire_date, 'YYYY')) = 2012;
 
 --8. Покажите завтрашнюю дату в формате: Tomorrow is Second day of January
---SELECT SYSDATE, TO_CHAR(SYSDATE, '"Tomororw is "Ddspth" day of "Month')
+--SELECT SYSDATE, TO_CHAR(SYSDATE+1, '"Tomororw is "Ddspth" day of "Month')
 --	FROM dual;
 -- Here is 'Ddspth' stands for - 'Dd' as Day 'sp' - written by words and with 'th'
 
@@ -306,12 +307,15 @@
 --			'FALSE', 'different length')
 --FROM hr.employees;
 
+-- тожможно было через NVL2+NULLIF+LENGTH
+
 --16.Выведите имя сотрудника, его комиссионные, а также информацию о наличии бонусов к зарплате – есть ли у него комиссионные (Yes/No).
 --SELECT first_name, commission_pct, NVL2(commission_pct, 'Yes', 'No') FROM hr.employees;
 
 --17.Выведите имя сотрудника и значение которое его будет характеризовать:
 --значение комиссионных, если присутствует, если нет, то id его менеджера, если и оно отсутствует, то его з/п.
 --SELECT first_name, nvl(commission_pct, nvl(manager_id, salary)) AS magic_data FROM hr.employees;
+--SELECT first_name, COALESCE(commission_pct, manager_id, salary) AS magic_data FROM hr.employees;
 
 --18.Выведите имя сотрудника, его з/п, а также уровень зарплаты каждого сотрудника:
 -- Меньше 5000 считается Low level, Больше или равно 5000 и меньше 10000 считается Normal level, Больше или равно 10000 считается High level.
@@ -353,10 +357,10 @@
 -- BAD: з/п меньше 10000 и отсутствие комиссионных;
 -- NORMAL: з/п между 10000 и 15000 или, если присутствуют комиссионные;
 -- GOOD: з/п больше или равна 15000.
---SELECT first_name, salary, commission_pct,
+--SELECT first_name, salary,
 --	CASE
 --		WHEN salary <= 10000 AND commission_pct IS NULL THEN 'BAD'
---		WHEN salary > 10000 AND salary < 15000 AND commission_pct IS NOT NULL THEN 'NORMAL'
+--		WHEN salary BETWEEN 10000 AND 15000 OR commission_pct IS NOT NULL THEN 'NORMAL'
 --		WHEN salary >= 15000 THEN 'GOOD'
 --	END AS salary_level
 --FROM hr.employees;
