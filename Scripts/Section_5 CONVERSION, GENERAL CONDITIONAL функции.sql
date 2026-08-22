@@ -204,26 +204,29 @@
 --       END AS job_name
 --FROM hr.employees;
 
-
 -- ****************************************************************************************** Home Work
 --https://www.udemy.com/course/sql-oracle-certification/learn/lecture/16661506#overview
 
 --1. Используя функции, получите список всех сотрудников у которых в имени есть буква 'b' (без учета регистра).
 --SELECT * FROM hr.employees WHERE LOWER(first_name) LIKE('%b%');
+--SELECT * FROM hr.employees WHERE INSTR(LOWER(first_name), 'b') > 0;
 
 --2. Используя функции, получите список всех сотрудников у которых в имени содержатся минимум 2 буквы 'a'.
 --SELECT * FROM hr.employees WHERE LOWER(first_name) LIKE('%a%a%');
+--SELECT * FROM hr.employees WHERE INSTR(LOWER(first_name), 'a', 1, 2) > 0;
 
 --3. Получите первое слово из имени департамента, для тех департаментов, у которых название состоит больше, чем из одного слова.
 --SELECT department_name, SUBSTR(department_name, 1, INSTR(department_name, ' ')-1)
 --	FROM hr.departments WHERE INSTR(department_name, ' ') > 0;
 
 --4. Получите имена сотрудников без первой и последней буквы в имени.
---SELECT first_name, SUBSTR(first_name, 2, LENGTH(first_name)-2)  FROM hr.employees;
+--SELECT first_name, SUBSTR(first_name, 2, LENGTH(first_name)-2) FROM hr.employees;
 
 --5. Получите список всех сотрудников, у которых в значении job_id после знака '_' как минимум 3 символа, но при этом это значение после '_' не равно 'CLERK'.
 --SELECT first_name, job_id, SUBSTR(job_id, INSTR(job_id, '_')+1) FROM hr.employees
 --	WHERE job_id NOT LIKE '%CLERK' AND LENGTH(SUBSTR(job_id, INSTR(job_id, '_')+1)) > 2;
+
+--https://www.udemy.com/course/sql-oracle-certification/learn/lecture/16661506#overview -------------------------------------
 
 --6. Получите список всех сотрудников, которые пришли на работу в первый день любого месяца.
 --SELECT first_name, hire_date, LAST_DAY(ADD_MONTHS(hire_date, -1))+1 AS frist_day FROM hr.employees
@@ -306,15 +309,57 @@
 --16.Выведите имя сотрудника, его комиссионные, а также информацию о наличии бонусов к зарплате – есть ли у него комиссионные (Yes/No).
 --SELECT first_name, commission_pct, NVL2(commission_pct, 'Yes', 'No') FROM hr.employees;
 
---17.Выведите имя сотрудника и значение которое его будет характеризовать: значение комиссионных, если присутствует, если нет, то id его менеджера, если и оно отсутствует, то его з/п.
---18.Выведите имя сотрудника, его з/п, а также уровень зарплаты каждого сотрудника: Меньше 5000 считается Low level, Больше или равно 5000 и меньше 10000 считается Normal level, Больше или равно 10000 считается High level.
---19.Для каждой страны показать регион, в котором она находится: 1-Europe, 2-America, 3-Asia, 4-Africa . Выполнить данное задание, не используя функционал JOIN. Используйте DECODE.
+--17.Выведите имя сотрудника и значение которое его будет характеризовать:
+--значение комиссионных, если присутствует, если нет, то id его менеджера, если и оно отсутствует, то его з/п.
+--SELECT first_name, nvl(commission_pct, nvl(manager_id, salary)) AS magic_data FROM hr.employees;
+
+--18.Выведите имя сотрудника, его з/п, а также уровень зарплаты каждого сотрудника:
+-- Меньше 5000 считается Low level, Больше или равно 5000 и меньше 10000 считается Normal level, Больше или равно 10000 считается High level.
+--SELECT first_name, salary,
+--	CASE
+--		WHEN salary < 5000 THEN 'Low level'
+--		WHEN salary >= 10000 THEN 'High level'
+--		ELSE 'Normal level'
+--	END AS salary_level
+--FROM hr.EMPLOYEES;
+
+--19.Для каждой страны показать регион, в котором она находится: 10-Europe, 20-Americas, 30-Asia, 40-Oceania, 50-Africa.
+--Выполнить данное задание, не используя функционал JOIN. Используйте DECODE.
+--SELECT country_id, country_name, region_id,
+--	DECODE(
+--		region_id,
+--		10, 'Europe',
+--		20, 'Americas',
+--		30, 'Asia',
+--		40, 'Oceania',
+--		50, 'Africa',
+--		'Unknown Region'
+--	) AS region_name
+--FROM hr.countries;
+
 --20.Задачу №19 решите используя CASE.
---21.Выведите имя сотрудника, его з/п, а также уровень того, насколько у сотрудника хорошие условия :
+--SELECT country_id, country_name, region_id,
+--	CASE region_id
+--		WHEN 10 THEN 'Europe'
+--		WHEN 20 THEN 'Americas'
+--		WHEN 30 THEN 'Asia'
+--		WHEN 40 THEN 'Oceania'
+--		WHEN 50 THEN 'Africa'
+--		ELSE 'Unknown Region'
+--	END AS region_name
+--FROM hr.countries;
+
+--21.Выведите имя сотрудника, его з/п, а также уровень того, насколько у сотрудника хорошие условия:
 -- BAD: з/п меньше 10000 и отсутствие комиссионных;
 -- NORMAL: з/п между 10000 и 15000 или, если присутствуют комиссионные;
 -- GOOD: з/п больше или равна 15000.
-
+--SELECT first_name, salary, commission_pct,
+--	CASE
+--		WHEN salary <= 10000 AND commission_pct IS NULL THEN 'BAD'
+--		WHEN salary > 10000 AND salary < 15000 AND commission_pct IS NOT NULL THEN 'NORMAL'
+--		WHEN salary >= 15000 THEN 'GOOD'
+--	END AS salary_level
+--FROM hr.employees;
 
 
 
